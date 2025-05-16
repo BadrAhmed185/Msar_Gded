@@ -8,6 +8,7 @@
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
+            //Mango
         }
 
         public DbSet<Student> Students { get; set; }
