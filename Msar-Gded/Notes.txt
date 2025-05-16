@@ -1,0 +1,287 @@
+﻿Table: ViewData vs ViewBag vs TempData
+
+Feature	ViewData	ViewBag	TempData
+Type	Dictionary (ViewData["Key"])	Dynamic (ViewBag.Key)	Dictionary (TempData["Key"])
+Need Casting?	✅ Yes (to use real value)	❌ No (dynamic type)	✅ Yes (to use real value)
+Data Lifetime	Only during the current request	Only during the current request	Survives for one more request (Redirects)
+Usage Style	ViewData["Name"]	ViewBag.Name	TempData["Name"]
+Purpose	Pass data from Controller ➔ View	Pass data from Controller ➔ View	Pass data from Controller ➔ Controller (after Redirect) or Controller ➔ View
+Best for	Small pieces of data, dropdowns, labels	Small pieces of data, easy syntax	Messages after a Redirect (Success Message, Error, etc.)
+Null Safety	❗ Risky if key is missing	❗ Risky if property missing	❗ Risky if key is missing
+Serialization	❌ No	❌ No	✅ Yes (can store across requests temporarily)
+
+
+
+
+
+
+/////////////////////////////
+ new SelectList(...)
+Explanation: SelectList is a class that generates an HTML <select> element (a dropdown list) for a collection of items.
+
+Parameters in the SelectList constructor:
+
+First Parameter: _context.Colleges — This is the collection of items to display in the dropdown.
+
+Second Parameter: "Id" — This is the value property of each item in the dropdown (it's used when the form is submitted). This tells the SelectList to use the Id property of each College object as the value for each <option> in the dropdown.
+
+Third Parameter: "Name" — This is the display property. The Name property will be shown to the user in the dropdown (as the label for each option).
+
+
+
+
+
+
+
+//////////////////////////////////////////////
+
+@if (TempData["Errors"] is IEnumerable<string> errors && errors.Any())
+
+This is a C# "pattern matching expression"" using the is keyword inside a Razor @if block.
+
+✅ What It's Doing:
+It's checking two things in one line:
+
+Whether TempData["Errors"] is an IEnumerable<string> (a collection of strings),
+
+If so, assign it to a new variable named errors, and then check if it has any items.
+
+So, this part:
+
+csharp
+Copy
+Edit
+TempData["Errors"] is IEnumerable<string> errors
+Means:
+“If TempData["Errors"] can be cast to an IEnumerable<string>, then store it in a new variable named errors.”
+
+And this part:
+
+csharp
+Copy
+Edit
+
+&& errors.Any()
+Uses the newly created variable errors from the pattern match to check if it contains any elements.
+
+🔁 Equivalent Expanded Code:
+The one-liner is just shorthand for this longer version:
+
+csharp
+Copy
+Edit
+
+var tempErrors = TempData["Errors"] as IEnumerable<string>;
+if (tempErrors != null && tempErrors.Any())
+{
+    var errors = tempErrors;
+    // use errors
+}
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////
+
+Understanding the difference between Select and SelectMany in LINQ is key to working with collections — especially nested ones.
+
+🔹 Select
+Purpose: Projects each element of a sequence into a new form.
+
+SelectMany
+Purpose: Flattens a sequence of sequences into a single sequence.
+Result: Returns one flat list from all inner collections.
+
+ var data = new List<List<int>> {
+    new List<int> {1, 2},
+    new List<int> {3, 4}
+};
+data.Select(x => x) → List of 2 lists: [[1, 2], [3, 4]]
+
+data.SelectMany(x => x) → Flat list: [1, 2, 3, 4]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@model Msar_Gded.Models.ViewModels.StudentRequestVm
+@using Msar_Gded.Helpers
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <title>إنشاء طلب تحويل</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center">إنشاء طلب تحويل</h2>
+
+        <form asp-action="RequestForm" asp-route-id="@Model.NationalId" method="post" enctype="multipart/form-data">
+
+            <div class="mb-3">
+                <label for="NationalId" class="form-label">الرقم القومي</label>
+                <input type="text" id="NationalId" asp-for="@Model.NationalId"  class="form-control" readonly/>
+            </div>
+               
+            <div class="mb-3">
+                <label for="Name" class="form-label">الاسم</label>
+                <input type="text" id="Name" asp-for="@Model.Name" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="PhoneNumber" class="form-label">رقم الهاتف</label>
+                <input type="text" id="PhoneNumber" asp-for="@Model.PhoneNumber" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="BirthDate" class="form-label">تاريخ الميلاد</label>
+                <input type="date" id="BirthDate" asp-for="@Model.BirthDate" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="BirthPlace" class="form-label">مكان الميلاد</label>
+                <input type="text" id="BirthPlace" asp-for="@Model.BirthPlace" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="GraduationDate" class="form-label">تاريخ التخرج</label>
+                <input type="date" id="GraduationDate" asp-for="@Model.GraduationDate" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="HighSchoolDivision" class="form-label">شعبة الثانوية العامة</label>
+
+                <select asp-for="HighSchoolDivision" class="form-control" asp-items="@(new SelectList(EnumHelper.GetSelectList<Msar_Gded.Enums.HighSchoolDivision>(), "Value", "Text" , Model.HighSchoolDivision))">
+                    <option value="" selected>-- اختر الشعبة --</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="EducationalZone" class="form-label">المنطقة التعليمية</label>
+                <input type="text" id="EducationalZone" asp-for="@Model.EducationalZone" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="PureDegree" class="form-label">المجموع الاعتباري</label>
+                <input type="number" id="PureDegree" asp-for="@Model.PureDegree" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="DegreeWithLanguage" class="form-label">المجموع مع اللغة</label>
+                <input type="number" id="DegreeWithLanguage" asp-for="@Model.DegreeWithLanguage" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="TotalDegree" class="form-label">المجموع الكلي</label>
+                <input type="number" id="TotalDegree" asp-for="@Model.TotalDegree" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="UniversityGrade" class="form-label">الصف الجامعي</label>
+                <input type="text" id="UniversityGrade" asp-for="@Model.UniversityGrade" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="SchoolCertificateUpload" class="form-label">رفع شهادة الثانوية</label>
+                <input type="file" id="SchoolCertificateUpload" asp-for="@Model.SchoolCertificateUpload" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="LeterOfStatusUpload" class="form-label">رفع خطاب الحالة</label>
+                <input type="file" id="LeterOfStatusUpload" asp-for="@Model.LeterOfStatusUpload" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="UniversityId" class="form-label">الجامعة الحالية</label>
+                <select asp-for="UniversityId" class="form-select" asp-items="ViewBag.Universities"></select>
+            </div>
+
+            <div class="mb-3">
+                <label for="CollegeId" class="form-label">الكلية الحالية</label>
+                <select asp-for="CollegeId" class="form-control" asp-items="ViewBag.Colleges"></select>
+            </div>
+
+            <div class="mb-3">
+                <label for="DateOfRequest" class="form-label">تاريخ الطلب</label>
+                <input type="date" id="DateOfRequest" asp-for="@Model.DateOfRequest" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label for="TypeOfRequest" class="form-label">نوع الطلب</label>
+                <select asp-for="@Model.TypeOfRequest" class="form-control" asp-items="@(new SelectList(EnumHelper.GetSelectList<Msar_Gded.Enums.RequestType>() ,"Value", "Text" , Model.TypeOfRequest))">
+                    <option value="" selected>-- اختر نوع الإستمارة --</option>
+                </select>
+
+            </div>
+
+@*             <div class="mb-3">
+                <label for="PaymentCode" class="form-label">كود الدفع</label>
+                <input type="number" id="PaymentCode" name="PaymentCode" class="form-control" />
+            </div> *@
+@* 
+            <div class="form-check mb-3">
+                <input type="checkbox" id="NeedRivision" name="NeedRivision" class="form-check-input" />
+                <label for="NeedRivision" class="form-check-label">يحتاج إلى مراجعة</label>
+            </div> *@
+
+            <div class="mb-3">
+                <label for="CurrentUniversityId" class="form-label">الجامعة المنقول منها</label>
+                <select asp-for="CurrentUniversityId" class="form-select" asp-items="ViewBag.Universities"></select>
+
+@*                 @Html.DropDownList("", ViewData["Universities"] as SelectList, "-- اختر الجامعة --", new { @class = "form-select" }) *@
+            </div>
+
+            <div class="mb-3">
+                <label for="CurrentCollegeId" class="form-label">الكلية المنقول منها</label>
+                <select asp-for="CurrentCollegeId" class="form-select" asp-items="ViewBag.Colleges"></select>
+
+
+            </div>
+
+            <div class="mb-3">
+                <label for="DestinationUniversityId" class="form-label">الجامعة المراد التحويل إليها</label>
+                <select asp-for="DestinationUniversityId" class="form-select" asp-items="ViewBag.Universities"></select>
+
+            </div>
+
+            <div class="mb-3">
+                <label for="DestinationCollegeId" class="form-label">الكلية المراد التحويل إليها</label>
+                <select asp-for="DestinationCollegeId" class="form-select" asp-items="ViewBag.Colleges"></select>
+
+            </div>
+
+ @*            <div class="mb-3">
+                <label for="StatusId" class="form-label">الحالة</label>
+                <input type="number" id="StatusId" name="StatusId" class="form-control" />
+            </div> *@
+
+            <button type="submit" class="btn btn-primary w-100">إرسال</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

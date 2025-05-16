@@ -1,0 +1,300 @@
+﻿@model Msar_Gded.Models.ViewModels.StudentRequestVm
+@using Msar_Gded.Helpers
+
+@{
+    ViewData["Title"] = "بوابة التحويلات الطلابية";
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <title>تعديل طلب تحويل</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
+    <link href="~/css/RequestForm.css" rel="stylesheet" />
+    <link href="~/css/Error.css" rel="stylesheet" />
+
+</head>
+<body>
+
+    <!-- Success Container -->
+    <div class="success-container" id="successContainer">
+        @if (TempData["Success"] != null)
+        {
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <div class="success-content">
+                    <div class="success-title">Done.</div>
+                    <div class="success-details">@TempData["Success"]</div>
+                    <div class="success-details">يتم الأن مراجعة الطلب و ابلاغكم بالرد في أسرع وقت ☺️.</div>
+
+                </div>
+                <button class="close-btn" onclick="closeMessage(this)">×</button>
+            </div>
+        }
+    </div>
+
+    <!-- Error Container -->
+    <div class="error-container" id="errorContainer">
+        @if (TempData["Error"] != null)
+        {
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <div class="error-content">
+                    <div class="error-title">فشل التسجيل  😕</div>
+                    <div class="error-details">@TempData["Error"]</div>
+                    @if (TempData["Errors"] is IEnumerable<string> errors && errors.Any())
+                    {
+                        <ul>
+
+                            @foreach (var error in errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    }
+                </div>
+                <button class="close-btn" onclick="closeMessage(this)">×</button>
+            </div>
+        }
+    </div>
+
+    <!-- Header -->
+    <header class="header-container">
+        <img src="~/images/MIS.jpg" class="header-img" alt="Right Logo" />
+        <div class="header-title">الإداره العامه لشئون التعليم | جامعة أسيوط</div>
+        <img src="~/images/assiut.png" class="header-img" alt="Left Logo" />
+    </header>
+
+    <div class="container organizationInfo">بوابة التحويلات الطلابية</div>
+    <div class="container organizationInfo">إدارة التسجيل (مكتب التحويلات المركزي)</div>
+    <br>
+    <hr style="width : 70%; margin : auto;">
+    <br>
+    <div class="container header-title" style=" text-align : center; color : #887c76;">طلب (تحويل - نقل قيد -  تعديل ترشيح)</div>
+
+    <div class="container my-2 request-form-container">
+
+        <form asp-controller="Request" asp-action="Edit" asp-route-id="@Model.NationalId" id="RequestForm" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="@Model.requestId" />
+
+            <div class="row g-4">
+
+                <!-- Right: Personal Information -->
+                <div class="col-md-6">
+                    <div class="section-header">البيانات الشخصية للطالب</div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">الاسم</label>
+                            <input type="text" asp-for="Name" class="form-control" readonly />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">الرقم القومي</label>
+                            <input type="text" asp-for="NationalId" class="form-control" readonly />
+                        </div>
+
+                        <div class="col-6 mb-3">
+                            <label class="form-label">تاريخ الميلاد</label>
+                            <input type="date" asp-for="BirthDate" class="form-control" readonly />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">مكان الميلاد</label>
+                            <input type="text" asp-for="BirthPlace" class="form-control" readonly />
+                        </div>
+
+                        <div class="col-6 mb-3">
+                            <label class="form-label">رقم الهاتف</label>
+                            <input type="text" asp-for="PhoneNumber" class="form-control" readonly />
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">المنطقة التعليمية</label>
+                            <input type="text" asp-for="EducationalZone" class="form-control"  readonly />
+                        </div>
+
+                        <div class="col-6 mb-3">
+                            <label class="form-label">شعبة الثانوية العامة</label>
+                            <select asp-for="HighSchoolDivision" class="form-select" asp-items="@(new SelectList(EnumHelper.GetSelectList<Msar_Gded.Enums.HighSchoolDivision>(), "Value", "Text", Model.HighSchoolDivision))" disabled>
+                                <option value="">-- اختر الشعبة --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 mb-3">
+                            <label class="form-label">تاريخ التخرج</label>
+                            <input type="date" asp-for="GraduationDate" class="form-control" readonly />
+                        </div>
+
+                        <div class="col-6 mb-3">
+                            <label class="form-label">المجموع الاعتباري</label>
+                            <input type="number" asp-for="PureDegree" class="form-control" id="PureDegree" readonly />
+                        </div>
+
+                        <div class="col-6 mb-3">
+                            <label class="form-label">المجموع مع اللغة</label>
+                            <input type="number" asp-for="DegreeWithLanguage" class="form-control" id="DegreeWithLanguage" readonly />
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label">المجموع الكلي</label>
+                            <input type="number" asp-for="@Model.TotalDegree" class="form-control" id="TotalDegree" readonly />
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label"> صورة إثبات الحالة:</label>
+                            <div class="file-upload">
+                                <input type="file" asp-for="LeterOfStatusUpload" style="display :none;" class="form-control file-input" />
+
+                                <button type="button" class="btn btn-secondary view-file"
+                                        data-url="@Url.Action("ViewFile", "Student", new { nationalId = Model.NationalId, fileType = "Status" })">
+                                    🖼️ عرض
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label">صورة شهادة الثانوية العامة:</label>
+                            <div class="file-upload">
+                                <input type="file" asp-for="SchoolCertificateUpload" style="display :none;" display="none" class="form-control file-input" />
+
+                                <button type="button" class="btn btn-secondary view-file"
+                                        data-url="@Url.Action("ViewFile", "Student", new { nationalId = Model.NationalId, fileType = "Certificate" })">
+                                    🖼️ عرض
+                                </button>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <!-- Left: Request Procedures -->
+                <div class="col-md-6">
+                    <div class="section-header">البيانات الخاصة بطلب التحويل</div>
+
+                    <div class="mb-3">
+                        <label class="form-label">الجامعة الحالية</label>
+                        <select asp-for="CurrentUniversityId" class="form-select" asp-items="ViewBag.Universities" id="UniversityHasValue" ></select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">الكلية الحالية</label>
+                        <select asp-for="CurrentCollegeId" class="form-select" asp-items="ViewBag.Colleges" id="CollegeHasValue" ></select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="UniversityGrade" class="form-label">الفرقة الحالية المقيد بها</label>
+                        <select asp-for="@Model.UniversityGrade" class="form-select" >
+                            <option value="" selected>-- اختر الفرقة --</option>
+                            <option value="1">الأولي</option>
+                            <option value="2">الثانيه</option>
+                            <option value="3">الثالثه</option>
+                            <option value="4">الرابعه</option>
+                            <option value="5">الخامسه</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">نوع الطلب</label>
+                        <select required asp-for="TypeOfRequest" class="form-select" asp-items="@(new SelectList(EnumHelper.GetSelectList<Msar_Gded.Enums.RequestType>(), "Value", "Text", Model.TypeOfRequest))" >
+                            <option value="">-- اختر نوع الإستمارة --</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">الجامعة المراد التحويل إليها</label>
+                        <select asp-for="DestinationUniversityId" class="form-select" asp-items="ViewBag.Universities" ></select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">الكلية المراد التحويل إليها</label>
+                        <select asp-for="DestinationCollegeId" class="form-select" asp-items="ViewBag.Colleges" ></select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">تاريخ الطلب</label>
+                        <input type="date" asp-for="DateOfRequest" id="DateOfRequest" class="form-control" readonly />
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <!-- Submit Button -->
+            <div class="text-center mt-3" style="display : flex; justify-content : center; gap: 40px;">
+               
+                <a asp-controller="Student" asp-action="StudentProfile" asp-route-id="@Model.NationalId" class="btn-primary  submit-button" id="submitButton" style="width : 30%; text-decoration : none; ">رجوع</a>
+
+
+                <button type="submit" class="btn-primary  submit-button" id="submitButton" style="width : 40%;">تعديل</button>
+
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-container">
+        <div>جميع الحقوق محفوظة لمركز تطوير نظم المعلومات الإدارية |2025 &copy; جامعة أسيوط</div>
+    </footer>
+
+    <!-- File Preview Modal -->
+    <div class="modal fade" id="filePreviewModal" tabindex="-1" aria-labelledby="filePreviewLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">معاينة الملف</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="previewImage" src="#" alt="Preview" class="img-fluid" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/ReviewRequest.js"></script>
+</body>
+</html>

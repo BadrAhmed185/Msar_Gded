@@ -1,0 +1,341 @@
+﻿@model Msar_Gded.Models.ViewModels.StudentProfile
+@using Msar_Gded.Helpers
+
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/StudentProfile.css">
+    <link rel="stylesheet" href="~/css/Error.css">
+
+</head>
+
+<body>
+
+    <!-- Success Container -->
+    <div class="success-container" id="successContainer">
+        @if (TempData["Success"] != null)
+        {
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <div class="success-content">
+                    <div class="success-title">Done.</div>
+                    <div class="success-details">@TempData["Success"]</div>
+
+
+                </div>
+                <button class="close-btn" onclick="closeMessage(this)">×</button>
+            </div>
+        }
+    </div>
+
+    <!-- Error Container -->
+    <div class="error-container" id="errorContainer">
+        @if (TempData["Error"] != null)
+        {
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <div class="error-content">
+                    <div class="error-title">فشل التسجيل  😕</div>
+                    <div class="error-details">@TempData["Error"]</div>
+                    @if (TempData["Errors"] is IEnumerable<string> errors && errors.Any())
+                    {
+                        <ul>
+
+                            @foreach (var error in errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    }
+                </div>
+                <button class="close-btn" onclick="closeMessage(this)">×</button>
+            </div>
+        }
+    </div>
+
+
+    <div class="header">
+        <div class="logo-container" id="logo-left">
+            <img src="~/Images/assiut.png" alt="Assiut University Logo">
+        </div>
+        <div class="logo-container"  id="logo-center">
+            <img src="~/Images/MsarGded.jpg" alt="IDS Logo">
+        </div>
+        <div class="logo-container" id="logo-right">
+            <img src="~/Images/MIS.jpg" alt="College Logo">
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Title -->
+        <div class="title-container">
+            <h1>Student personal data and his requests</h1>
+            <h2>بيانات الطالب و الإستمارات الخاصه .</h2>
+        </div>
+
+        <!-- Patient Information Form -->
+        <div class="container py-4 bg-light rounded shadow-sm">
+            <dl class="row">
+
+                <dt class="col-md-2">الاسم رباعي</dt>
+                <dd class="col-md-4">@Model.Name</dd>
+
+                <dt class="col-md-2">رقم الهاتف</dt>
+                <dd class="col-md-4">@Model.PhoneNumber</dd>
+
+                <dt class="col-md-2">الرقم القومي</dt>
+                <dd class="col-md-4">@Model.NationalId</dd>
+
+                <dt class="col-md-2" asp-for="@Model.BirthDate">تاريخ الميلاد</dt>
+                <dd class="col-md-4">@Model.BirthDate.ToString("yyyy-MM-dd")</dd>
+
+                <dt class="col-md-2" asp-for="@Model.BirthPlace">مكان الميلاد</dt>
+                <dd class="col-md-4">@Model.BirthPlace</dd>
+
+                <dt class="col-md-2" asp-for="@Model.GraduationDate">تاريخ التخرج</dt>
+                <dd class="col-md-4">@Model.GraduationDate.ToString("yyyy-MM-dd")</dd>
+
+                <dt class="col-md-2" asp-for="@Model.PureDegree">الدرجة بدون لغة</dt>
+                <dd class="col-md-4">@Model.PureDegree</dd>
+
+                <dt class="col-md-2" asp-for="@Model.DegreeWithLanguage">درجة اللغه</dt>
+                <dd class="col-md-4">@Model.DegreeWithLanguage</dd>
+
+                <dt class="col-md-2" asp-for="@Model.TotalDegree">المجموع الكلي</dt>
+                <dd class="col-md-4">@Model.TotalDegree</dd>
+
+                <dt class="col-md-2" asp-for="UniversityId">الجامعة</dt>
+                <dd class="col-md-4">
+                    @{
+                        var universities = ViewBag.Universities as SelectList;
+                        var selectedUniversity = universities?.FirstOrDefault(u => u.Value == Model.UniversityId.ToString());
+                    }
+                    @selectedUniversity?.Text
+                </dd>
+
+                <dt class="col-md-2" asp-for="CollegeId">الكلية</dt>
+                <dd class="col-md-4">
+                    @{
+                        var colleges = ViewBag.Colleges as SelectList;
+                        var selectedCollege = colleges?.FirstOrDefault(c => c.Value == Model.CollegeId.ToString());
+                    }
+                    @selectedCollege?.Text
+                </dd>
+
+
+                <dt class="col-md-2" asp-for="@Model.UniversityGrade">الصف الجامعي</dt>
+                <dd class="col-md-4">@Model.UniversityGrade</dd>
+
+           
+               
+
+                <dt class="col-md-2">صورة إثبات الحالة:</dt>
+                <dd class="col-md-4">
+                    <div class="file-upload">
+                        <input type="file" asp-for="LeterOfStatusUpload" style="display :none;" class="form-control file-input" />
+
+                        <button type="button" class="btn btn-secondary view-file"
+                                data-url="@Url.Action("ViewFile", "Student", new { nationalId = Model.NationalId, fileType = "Status" })">
+                            🖼️ عرض
+                        </button>
+                    </div>
+                </dd>
+
+           
+
+                <dt class="col-md-2">صورة شهادة الثانوية العامة:</dt>
+                <dd class="col-md-4">
+             
+                       <div class="file-upload">
+                            <input type="file" asp-for="LeterOfStatusUpload" style="display :none;" class="form-control file-input" />
+
+                            <button type="button" class="btn btn-secondary view-file"
+                                    data-url="@Url.Action("ViewFile", "Student", new { nationalId = Model.NationalId, fileType = "Status" })">
+                                🖼️ عرض
+                            </button>
+                        </div>
+
+                </dd>
+
+
+                <dt class="col-md-2" asp-for="@Model.EducationalZone">المنطقة التعليمية</dt>
+                <dd class="col-md-4">@Model.EducationalZone</dd>
+
+              
+
+            </dl>
+
+
+            <div class="mt-4" style="display : flex; justify-content : center; gap : 50px;"> 
+
+                  <a asp-controller="Request" asp-action="RequestForm" asp-route-id="@Model.NationalId" class="custom-link-btn">
+                    إضغط هنا لتقديم طلب جديد 
+                </a>
+
+                <a asp-controller="Student" asp-action="Edit" class="custom-link-btn">
+                    إضغط هنا لتعديل البيانات الشخصيه  
+                </a>
+
+              
+            </div>
+
+        </div>
+
+
+        <div class="table-title-container">
+         
+            <h4>الطلبات المقدمة من الطالب و نتائج المراجعه</h4>
+        </div>
+        <!-- Appointments Table -->
+        <table class="appointments-table">
+            <thead class="table-light">
+                <tr>
+                    <th>صاحب الطلب</th>
+                    <th>نوع الطلب</th>
+                    <th>المجموع</th>
+                    <th>الجامعة </th>
+                    <th>الكلية</th>
+                    <th>الجامعة المطلوبه</th>
+                    <th>الكلية المطلوبه</th>
+                    <th>حالة الطلب</th>
+                    <th>الإجرائات</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.requests != null && Model.requests.Any())
+                {
+                    foreach (var entity in Model.requests)
+                    {
+                        <tr>
+                            <td>@entity.Student.Name</td>
+                            <td>@entity.TypeOfRequest.GetDisplayName()</td>
+                            <td>@entity.Student.TotalDegree</td>
+                            <td>@entity.CurrentUniversity.Name</td>
+                            <td>@entity.CurrentCollege.Name</td>
+                            <td>@entity.DestinationUniversity.Name</td>
+                            <td>@entity.DestinationCollege.Name</td>
+                            <td>@entity.Status.Name</td>
+
+                            <td>
+
+                            @{
+                                if (entity.PaymentCode == null)
+                                {
+
+
+
+
+                                        <a asp-controller="Request" asp-action="Edit" asp-route-id="@entity.Id" type="button" class="btn edit-btn action-btn" style="text-decoration : none;">
+                                            تعديل الطلب
+                                        </a>
+
+                                 
+                                }
+                                else
+                                {
+
+
+                                        <a asp-controller="Request" asp-action="Pay" asp-route-id="@entity.Id" type="button" class="btn edit-btn action-btn " style="text-decoration : none;">
+                                             إذهب للدفع
+                                        </a>
+
+                               
+
+                                }
+                            }
+
+
+
+                                <button type="button" class="btn delete-btn action-btn " data-bs-toggle="modal" data-bs-target="#myModalDelete_@entity.Id">
+                                    حذف
+                                </button>
+
+                                <div class="modal fade" id="myModalDelete_@entity.Id" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <div class="modal-body"> 
+                                                <div class="PopUpDiv">
+                                                    <form asp-controller="@ViewBag.controllerName" asp-action="Delete" asp-route-id="@entity.Id" method="post">
+                                                        <input type="hidden" asp-for="@entity.Id" />
+
+                                                        <div class="mb-3">
+                                                            <h4>هل أنت متأكد أنك تريد حذف   @ViewBag.theEntity؟</h4>
+
+                                                            <p><strong>رقم  @ViewBag.theEntity:</strong> @entity.Id</p>
+                                                            <button type="submit" class="btn btn-danger">حذف</button>
+                                                            <a class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</a>
+                                                        </div>
+
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        
+
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">لا توجد طلبات لعرضها.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+
+
+        <!-- Footer -->
+        <div class="footer mt-5 text-center">
+            <p class="footer-text">جميع الحقوق محفوظة © مركز تطوير نظم المعلومات الإدارية - 2025</p>
+
+        </div>
+    </div>
+
+
+    <!-- File Preview Modal -->
+    <div class="modal fade" id="filePreviewModal" tabindex="-1" aria-labelledby="filePreviewLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">معاينة الملف</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="previewImage" src="#" alt="Preview" class="img-fluid" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/StudentProfile.js"></script>
+    <script src="~/js/CloseErrorMessage.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Msar-Gded.props" />
+</Project>

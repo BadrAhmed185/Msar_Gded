@@ -1,0 +1,137 @@
+﻿@model Msar_Gded.Models.ViewModels.SignUpVm
+
+@{
+    ViewData["Title"] = "SignUp Page";
+}
+
+@{
+    //ViewData["Title"] = ViewBag.thePluralEntity;
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب جديد</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="~/css/styleLogin&SignUp.css" rel="stylesheet">
+    <link href="~/css/Error.css" rel="stylesheet">
+
+
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="~/Images/MIS.jpg" style="  border-radius : 50%;">
+        </div>
+        <div class="UniversityLogo">
+            <img src="~/Images/assiut.png">
+        </div>
+    </header>
+    <div class="form-container">
+        <img src="~/Images/MsarGded.jpg" alt="System Logo">
+        <h3>تسجيل حساب جديد</h3>
+
+        <!-- Success Container -->
+        <div class="success-container" id="successContainer">
+            @if (TempData["Success"] != null)
+            {
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="success-content">
+                        <div class="success-title">Done.</div>
+                        <div class="success-details">@TempData["Success"]</div>
+
+
+                    </div>
+                    <button class="close-btn" onclick="closeMessage(this)">×</button>
+                </div>
+            }
+        </div>
+
+        <!-- Error Container -->
+        <div class="error-container" id="errorContainer">
+            @if (TempData["Error"] != null)
+            {
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div class="error-content">
+                        <div class="error-title">فشل التسجيل  😕</div>
+                        <div class="error-details">@TempData["Error"]</div>
+                        @if (TempData["Errors"] is IEnumerable<string> errors && errors.Any())
+                        {
+                            <ul>
+
+                                @foreach (var error in errors)
+                                {
+                                    <li>@error</li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                    <button class="close-btn" onclick="closeMessage(this)">×</button>
+                </div>
+            }
+        </div>
+
+
+        <form asp-action="SignUp" method="post">
+            <div class="form-group">
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input asp-for="UserName" type="text" placeholder="اسم المستخدم">
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-id-card"></i>
+                    <input asp-for="FullName" type="text" placeholder="الإسم ثلاثي">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input asp-for="Password" type="password" placeholder="كلمة السر">
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input asp-for="ConfirmPassword" type="password" placeholder="تأكيد كلمة السر">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <i class="fa-solid fa-id-card"></i>
+                    <input asp-for="NationalId" type="text" placeholder="الرقم القومي">
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-phone"></i>
+                    <input asp-for="PhoneNumber" type="text" placeholder="رقم الهاتف">
+                </div>
+
+            </div>
+            <div class="form-group">
+                <div class="input-group" style="flex-basis: 100%;">
+                    <i class="fa-solid fa-user-tag"></i>
+                    <select class="form-control" asp-for="Role">
+                        @foreach (var role in ViewBag.Roles)
+                        {
+                            <option value="@role">@role</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+			<input type="submit" value="تسجيل الدخول">
+</form>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-container">
+        <div>جميع الحقوق محفوظة لمركز تطوير نظم المعلومات الإدارية |2025 &copy; جامعة أسيوط</div>
+    </footer>
+    <script src="~/js/CloseErrorMessage.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,217 @@
+﻿@{
+    ViewData["Title"] = "Main Page";
+}
+@using Msar_Gded.Helpers
+@using System.Text.Json
+
+
+
+
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page | Msar-Gded</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="~/css/Error.css">
+
+    <link rel="stylesheet" href="~/css/AdminHome.css">
+</head>
+<body>
+
+
+
+    <!-- Success Container -->
+    <div class="success-container" id="successContainer">
+        @if (TempData["Success"] != null)
+        {
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <div class="success-content">
+                    <div class="success-title">Done.</div>
+                    <div class="success-details">@TempData["Success"]</div>
+
+
+                </div>
+                <button class="close-btn" onclick="closeMessage(this)">×</button>
+            </div>
+        }
+    </div>
+
+    <!-- Error Container -->
+    <div class="error-container" id="errorContainer">
+        @if (TempData["Error"] != null)
+        {
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <div class="error-content">
+                    <div class="error-title">فشل التسجيل  😕</div>
+                    <div class="error-details">@TempData["Error"]</div>
+                    @if (TempData["Errors"] is IEnumerable<string> errors && errors.Any())
+                    {
+                        <ul>
+
+                            @foreach (var error in errors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    }
+                </div>
+                <button class="close-btn" onclick="closeMessage(this)">×</button>
+            </div>
+        }
+    </div>
+
+
+    <div class="sidebar">
+        <div class="logo">
+            <img src="~/Images/MsarGded.jpg" alt="Dental Logo">
+        </div>
+
+        <nav>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <button class="nav-item " id="employeeManagement" onclick="loadPartialView('/Auth/ShowAll')">
+                    <i class="icon bi bi-person-circle"></i>إدارة الموظفين
+                </button>
+            }
+
+              
+
+            <button class="nav-item" id="AllRequests" onclick="loadPartialView('/Request/GetRequests')">
+                <i class="icon">📝</i> عرض جميع الطلبات
+                </button>
+
+
+            <hr>
+            <label class="form-label">  <i class="icon">📅</i> تصفية النتائج : </label>
+
+
+
+            <select class="nav-item selects" id="statusId" name="StatusId" asp-items="@ViewBag.Statuses">
+
+                <i class="icon bi bi-arrow-down-short"></i>
+                <option value="" selected> حالة الطلب</option>
+
+                    @foreach (var item in ViewBag.Statuses)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+
+                }
+             
+
+                </select>
+
+
+            <select class="nav-item selects" id="typeOfRequestId" name="typeOfRequestId" asp-items="@(new SelectList(EnumHelper.GetSelectList<Msar_Gded.Enums.RequestType>(), "Value", "Text"))">
+                <i class="icon bi bi-arrow-down-short"></i>
+                <option  value="" selected> نوع الطلب</option>
+
+            </select>
+                
+                    
+                <hr>
+
+            <a class="nav-item" style="text-decoration : none" asp-controller="Auth" asp-action="SignOut">
+                <i class="icon bi bi-box-arrow-right"></i>تسجيل خروج
+                </a>
+            </nav>
+        </div>
+
+        <div id="partialView" ></div>
+
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+
+        document.querySelectorAll('.selects').forEach(select => {
+
+            select.addEventListener('change' , function () {
+                 const statusId =  document.getElementById('statusId').value;
+                 const typeOfRequestId = document.getElementById('typeOfRequestId').value;
+                 loadPartialView(`/Request/GetRequests?statusId=${statusId}&typeOfRequestId=${typeOfRequestId}`);
+            });
+            });
+
+
+         document.querySelectorAll('.nav-item').forEach(but => {
+            but.addEventListener('click', function () {
+                // Remove 'active' class from all nav items
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Add 'active' class to the clicked element
+                but.classList.add('active');
+            });
+        });
+
+
+       
+       
+    </script>
+<script>
+        function loadPartialView(url) {
+
+            $.ajax({
+                url: url,  // Send request to the given URL
+                type: "GET",  // Use GET method
+                success: function (data) {
+                    $("#partialView").html(data);  // Insert response (HTML) into the placeholder
+                },
+                error: function () {
+                    alert("Error loading content.");  // Show an error message if something goes wrong
+                }
+            });
+        }
+    </script>
+<script>
+            function closePopup(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        window.onload = function () {
+            // First case: Load from query string
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryLoad = urlParams.get('load');
+
+            if (queryLoad) {
+                loadPartialView('/' + queryLoad);
+            }
+
+            // Second case: Load from ViewBag (e.g., via POST)
+            const viewBagLoad = '@ViewBag.LoadPartial';
+            if (viewBagLoad) {
+                loadPartialView('/' + viewBagLoad);
+            }
+
+                     var error = "@TempData["Error"]";
+            var success = "@TempData["success"]";
+
+            if (error && error.trim() !== "") {
+                document.getElementById("errorPopup").style.display = "flex";
+            }
+
+            if (success && success.trim() !== "") {
+                document.getElementById("successPopup").style.display = "flex";
+            }
+        };
+    </script>
+
+<script src="~/js/CloseErrorMessage.js"></script>
+
+
+</body>
+</html>

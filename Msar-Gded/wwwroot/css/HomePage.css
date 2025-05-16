@@ -1,0 +1,88 @@
+﻿body {
+    background: url("../images/BackGround.avif") no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Cairo', sans-serif;
+    min-height: 100vh;
+    position: relative;
+}
+
+.overlay-container {
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    height: 430px;
+    box-shadow: 0px 4px 4px 0px #00000040;
+    /* opacity: 0.8; */
+}
+
+#studentContainer {
+    background: #BDA38ACC;
+}
+
+#empContainer {
+    background: #DCBFA9CC;
+}
+
+.overlay-container h5 {
+    margin-bottom: 20px;
+}
+
+.form-control,
+.btn {
+    border-radius: 30px;
+}
+
+header, footer {
+    text-align: center;
+    padding: 20px;
+
+}
+footer {
+    background: #cabfb4;
+    bottom: 0;
+
+    padding: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.main-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    padding: 30px 15px;
+    flex-wrap: wrap;
+}
+
+.but {
+    background: #887C76 !important;
+    border: #887C76;
+    box-shadow: 10px 15px 12px 0px rgba(0, 0, 0, 0.25); /* #00000040 = rgba(0, 0, 0, 0.25) */
+}
+
+.header-logo {
+    height: 80px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+@media (max-width: 768px) {
+    .main-section {
+        flex-direction: column;
+        gap: 20px;
+    }
+}

@@ -1,0 +1,67 @@
+﻿    @model IEnumerable<Msar_Gded.Models.Request>
+    @using Msar_Gded.Helpers
+    @using Msar_Gded.Enums
+
+
+    @{
+        Layout = null;
+    }
+
+
+    <input id="controllerName" type="hidden" value="@ViewBag.controllerName">
+    <input id="baseUrl" type="hidden" value="@Url.Content("~/")">
+
+
+    <div class="container">
+        <div class="search-bar">
+        <input id="searchBox" type="search" placeholder="ابحث عن @ViewBag.entity بإسم الطالب أو الرقم القومي">
+        </div>
+   
+        <div class="main-content">
+            <div class="employee-table" id="employeeTable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>صاحب الطلب</th>
+                            <th>نوع الطلب</th>
+                            <th>المجموع</th>
+                            <th>الجامعة </th>
+                            <th>الكلية</th>
+                            <th>الجامعة المطلوبه</th>
+                            <th>الكلية المطلوبه</th>
+                            <th>حالة الطلب</th>
+                            <th>الإجرائات</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="entityTableBody">
+                        @foreach (var entity in Model)
+                        {
+                            <tr>
+                                <td>@entity.Student.Name</td>
+                                <td>@entity.TypeOfRequest.GetDisplayName()</td>
+                                <td>@entity.Student.TotalDegree</td>                            
+                                <td>@entity.CurrentUniversity.Name</td>
+                                <td>@entity.CurrentCollege.Name</td>
+                                <td>@entity.DestinationUniversity.Name</td>
+                                <td>@entity.DestinationCollege.Name</td>
+                                <td>@entity.Status.Name</td>
+
+                                <td>
+
+                                    <a asp-action="ReviewRequest" asp-route-id="@entity.Id" type="button" class="btn btn-dark edit-btn" style="text-decoration : none;">
+                                        مراجعة الطلب 
+                                    </a>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/RequestSearchHandler.js"></script>
+
+

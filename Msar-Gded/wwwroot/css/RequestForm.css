@@ -1,0 +1,165 @@
+/* --- General Page Style --- */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Cairo', 'Tajawal', 'Segoe UI', sans-serif;
+    direction: rtl;
+}
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    box-shadow: 0 0 0px 1000px white inset !important;
+    -webkit-text-fill-color: #000 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+
+
+.container.request-form-container {
+    background: #ffffff;
+    padding: 26px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+   
+}
+
+/* --- Header --- */
+.header-container {
+  /*  background: #004080;*/
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-img {
+    height: 100px;
+}
+
+.header-title {
+    font-size: 24px;
+    font-weight: bold;
+    color : black;
+}
+.organizationInfo {
+    text-align: center;
+    font-size: 21px;
+    color: black;
+}
+
+/* --- Footer --- */
+.footer-container {
+    /* background: #004080;*/
+    color: #887C76;
+    padding: 15px 10px;
+    text-align: center;
+    margin-top: 40px;
+    font-size: 17px;
+    font-weight : bold;
+}
+
+/* --- Section Headers --- */
+.section-header {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 20px;
+ /*   border-bottom: 2px solid #004080;*/
+        background-color : #887C76;
+    padding: 18px;
+    border-radius : 10px;
+}
+
+/* --- Form Controls --- */
+.form-label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    display: block;
+    color: #887C76;
+
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    min-height: 45px;
+    box-shadow: 0 4px 6px rgba(245, 245, 220, 0.4);
+}
+
+
+input[readonly] {
+    background-color: #e9ecef;
+}
+
+/* --- File Upload Section --- */
+.file-upload {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+   
+}
+
+.file-input {
+    flex-grow: 1;
+}
+
+.view-file, .delete-file {
+
+    padding: 8px 12px;
+ /*   background-color: #887C76;*/
+}
+
+/* --- Submit Button --- */
+.submit-button {
+    padding: 12px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    background-color: #887C76;
+    border: none;
+    transition: background-color 0.6s ease;
+    width : 300px;
+    color : white;
+   
+}
+
+    .submit-button:hover {
+        color: #fff;
+        background-color: black;
+        box-shadow: 0 4px 6px rgba(245, 245, 220, 0.4);
+    }
+
+/* --- Terms Link --- */
+#termsLink {
+    color: #887C76;
+    text-decoration: underline;
+    font-size: 16px;
+}
+
+    #termsLink:hover {
+        text-decoration: none;
+    }
+
+/* --- Modal Style --- */
+.modal-content {
+    border-radius: 12px;
+}
+
+.modal-title {
+    color: #887C76;
+    font-weight: bold;
+}
+
+#previewImage {
+    max-height: 500px;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .header-title {
+        font-size: 20px;
+    }
+
+    .section-header {
+        font-size: 18px;
+    }
+}
+

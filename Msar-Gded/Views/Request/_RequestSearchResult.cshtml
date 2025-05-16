@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Msar_Gded.Models.Request>
+@using Msar_Gded.Helpers
+@using Msar_Gded.Enums
+
+@if (Model.Any())
+{
+    @foreach (var entity in Model)
+    {
+        <tr>
+            <td>@entity.Student.Name</td>
+            <td>@entity.TypeOfRequest.GetDisplayName()</td>
+            <td>@entity.Student.TotalDegree</td>
+
+            <td>@entity.CurrentUniversity.Name</td>
+            <td>@entity.CurrentCollege.Name</td>
+            <td>@entity.DestinationUniversity.Name</td>
+            <td>@entity.DestinationCollege.Name</td>
+            <td>@entity.Status.Name</td>
+
+            <td>
+
+
+                <a asp-action="ReviewRequest" asp-route-id="@entity.Id" type="button" class="btn btn-dark edit-btn" style="text-decoration : none;">
+                    مراجعة الطلب
+                </a>
+            </td>
+        </tr>
+    }
+}
