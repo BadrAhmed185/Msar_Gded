@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Msar-Gded")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aba44abdf2fe000b2e58bb28ca869c27f1514a00")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0448b1dd8c34d6aa45aed7faffea0c352477f378")]
 [assembly: System.Reflection.AssemblyProductAttribute("Msar-Gded")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Msar-Gded")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
